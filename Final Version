@@ -1,0 +1,245 @@
+def get_region(lat, lon):
+    # East China (EC)
+    if 115 <= lon <= 123 and 26 <= lat <= 36:
+        return ('EC', 'East China')
+    # Middle China (MC)
+    elif 110 <= lon <= 115 and 28 <= lat <= 36:
+        return ('MC', 'Middle China')
+    # North China (NC)
+    elif 110 <= lon <= 120 and 36 <= lat <= 42:
+        return ('NC', 'North China')
+    # Northeast China (NEC)
+    elif 120 <= lon <= 135 and 42 <= lat <= 53:
+        return ('NEC', 'Northeast China')
+    # Northwest China (NWC)
+    elif 73 <= lon <= 105 and 34 <= lat <= 50:
+        return ('NWC', 'Northwest China')
+    # South China (SC)
+    elif 105 <= lon <= 120 and 18 <= lat <= 26:
+        return ('SC', 'South China')
+    # Southwest China (SWC)
+    elif 90 <= lon <= 105 and 22 <= lat <= 34:
+        return ('SWC', 'Southwest China')
+    else:
+        return (None, None)
+
+def main():
+    # Question 1: Where is the farm?
+    print("Question 1: Where is the farm?")
+    try:
+        lat = float(input("Please enter the latitude in degrees (e.g., 34.0522): "))
+        lon = float(input("Please enter the longitude in degrees (e.g., 118.2437): "))
+    except ValueError:
+        print("Invalid input. Please enter numeric values for latitude and longitude.")
+        return
+
+    region_code, region_name = get_region(lat, lon)
+    if region_code is None:
+        print("Coordinates are outside of China or not recognized in any region.")
+        return
+    else:
+        print(f"Your farm is in {region_name} ({region_code}).")
+
+    # Question 2: What size is your farm?
+    print("\nQuestion 2: What size is your farm?")
+    size_input = input("Please enter the size of your farm in hectares (e.g., 100): ")
+    import re
+    size_match = re.search(r'\d+\.?\d*', size_input)
+    if size_match:
+        farm_size = float(size_match.group())
+        print(f"Farm size recorded as {farm_size} hectares.")
+    else:
+        print("Invalid input. Please enter a numeric value for the farm size.")
+        return
+
+    # Question 3: What crops are you growing?
+    print("\nQuestion 3: What crops are you growing?")
+    crops_list = ['Rice', 'Wheat', 'Corn', 'Soybean', 'Cotton', 'Sugarcane', 'Rapeseed', 'Sweet Potato', 'Potato', 'Tea']
+    print("Please select from the following options:")
+    for idx, crop in enumerate(crops_list, 1):
+        print(f"{idx}. {crop}")
+    crop_choices = input("Enter the numbers corresponding to your crop choices, separated by commas: ")
+    try:
+        crop_indices = [int(choice.strip()) - 1 for choice in crop_choices.split(',')]
+        selected_crops = []
+        for index in crop_indices:
+            if 0 <= index < len(crops_list):
+                selected_crops.append(crops_list[index])
+            else:
+                print(f"Invalid selection: {index + 1}. Please choose numbers from the list.")
+                return
+        print(f"You have selected: {', '.join(selected_crops)}")
+    except ValueError:
+        print("Invalid input. Please enter numbers corresponding to your crop choices, separated by commas.")
+        return
+
+    # Store the answers into organized variables
+    answers = {
+        'region_code': region_code,
+        'region_name': region_name,
+        'farm_size': farm_size,
+        'crops': selected_crops
+    }
+
+    print("\nSummary of your inputs:")
+    print(f"Region: {answers['region_name']} ({answers['region_code']})")
+    print(f"Farm Size: {answers['farm_size']} hectares")
+    print(f"Crops: {', '.join(answers['crops'])}")
+
+    # Pest data with dosage and application frequency information
+    pests = [
+        {
+            'name': 'Brown planthopper',
+            'regions': ['EC', 'MC', 'SC', 'SWC'],
+            'crops': ['Rice'],
+            'pesticides': [
+                {
+                    'name': 'Neonicotinoids',
+                    'dosage_per_hectare': 0.3,  # liters per hectare
+                    'dilution': 'Dilute 0.3 liters in 200 liters of water per hectare.'
+                },
+                {
+                    'name': 'Buprofezin',
+                    'dosage_per_hectare': 0.5,
+                    'dilution': 'Dilute 0.5 liters in 200 liters of water per hectare.'
+                }
+            ],
+            'application': 'Apply at early infestation stages.',
+            'frequency': 'Apply once; do not reapply within 14 days.',
+            'effect': 'Prevents further infestation by Brown planthopper.'
+        },
+        {
+            'name': 'Rice stem borer',
+            'regions': ['NC', 'EC', 'MC', 'SC', 'SWC'],
+            'crops': ['Rice'],
+            'pesticides': [
+                {
+                    'name': 'Tebufenozide',
+                    'dosage_per_hectare': 0.2,
+                    'dilution': 'Dilute 0.2 liters in 150 liters of water per hectare.'
+                },
+                {
+                    'name': 'Chlorantraniliprole',
+                    'dosage_per_hectare': 0.15,
+                    'dilution': 'Dilute 0.15 liters in 150 liters of water per hectare.'
+                }
+            ],
+            'application': 'Apply during larval hatching periods.',
+            'frequency': 'Apply every 10-14 days; maximum 3 applications per season.',
+            'effect': 'Controls larvae and protects rice crops from damage.'
+        },
+        {
+            'name': 'Cotton Bollworm',
+            'regions': ['EC', 'MC', 'NC', 'NEC', 'NWC', 'SC', 'SWC'],
+            'crops': ['Cotton', 'Corn', 'Soybean'],
+            'pesticides': [
+                {
+                    'name': 'Deltamethrin',
+                    'dosage_per_hectare': 0.1,
+                    'dilution': 'Dilute 0.1 liters in 300 liters of water per hectare.'
+                },
+                {
+                    'name': 'Spinosad',
+                    'dosage_per_hectare': 0.2,
+                    'dilution': 'Dilute 0.2 liters in 300 liters of water per hectare.'
+                }
+            ],
+            'application': 'Target early larval stages.',
+            'frequency': 'Apply every 7 days during larval stage; do not exceed 4 applications per season.',
+            'effect': 'Reduces bollworm population and prevents crop damage.'
+        },
+        {
+            'name': 'Asian Corn Borer',
+            'regions': ['EC', 'MC', 'NC', 'NEC', 'NWC', 'SC', 'SWC'],
+            'crops': ['Corn'],
+            'pesticides': [
+                {
+                    'name': 'Bacillus thuringiensis',
+                    'dosage_per_hectare': 1.0,
+                    'dilution': 'Dilute 1.0 liters in 200 liters of water per hectare.'
+                },
+                {
+                    'name': 'Spinosad',
+                    'dosage_per_hectare': 0.2,
+                    'dilution': 'Dilute 0.2 liters in 200 liters of water per hectare.'
+                }
+            ],
+            'application': 'Apply when egg masses hatch.',
+            'frequency': 'Apply at egg hatching; may repeat after 10 days if needed.',
+            'effect': 'Controls larvae before they bore into the stalk.'
+        },
+        {
+            'name': 'Soybean Aphid',
+            'regions': ['EC', 'MC', 'NC', 'NEC', 'NWC'],
+            'crops': ['Soybean'],
+            'pesticides': [
+                {
+                    'name': 'Pymetrozine',
+                    'dosage_per_hectare': 0.25,
+                    'dilution': 'Dilute 0.25 liters in 200 liters of water per hectare.'
+                }
+            ],
+            'application': 'Apply when aphid thresholds are exceeded.',
+            'frequency': 'Apply once; monitor and reapply only if necessary.',
+            'effect': 'Reduces aphid populations and minimizes crop stress.'
+        },
+        {
+            'name': 'Tea Green Leafhopper',
+            'regions': ['EC', 'SC', 'SWC'],
+            'crops': ['Tea'],
+            'pesticides': [
+                {
+                    'name': 'Imidacloprid',
+                    'dosage_per_hectare': 0.15,
+                    'dilution': 'Dilute 0.15 liters in 300 liters of water per hectare.'
+                }
+            ],
+            'application': 'Spray after plucking, following pre-harvest intervals.',
+            'frequency': 'Apply every 14 days after plucking.',
+            'effect': 'Protects new tea leaves from leafhopper damage.'
+        },
+        {
+            'name': 'Potato Tuber Moth',
+            'regions': ['SC', 'SWC', 'MC', 'EC'],
+            'crops': ['Potato'],
+            'pesticides': [
+                {
+                    'name': 'Bacillus thuringiensis',
+                    'dosage_per_hectare': 1.2,
+                    'dilution': 'Dilute 1.2 liters in 250 liters of water per hectare.'
+                }
+            ],
+            'application': 'Apply to foliage and soil, focusing on larval stages.',
+            'frequency': 'Apply every 7-10 days during larval stages; maximum 5 applications per season.',
+            'effect': 'Prevents larvae from damaging tubers.'
+        }
+    ]
+
+    # Provide pesticide advice based on the information entered
+    print("\nPesticide Advice:")
+    relevant_pests = []
+    for pest in pests:
+        if answers['region_code'] in pest['regions']:
+            for crop in answers['crops']:
+                if crop in pest['crops']:
+                    relevant_pests.append({'pest': pest, 'crop': crop})
+
+    if relevant_pests:
+        for item in relevant_pests:
+            pest = item['pest']
+            crop = item['crop']
+            print(f"\nTo protect your {crop} from {pest['name']}:")
+            for pesticide in pest['pesticides']:
+                total_amount = pesticide['dosage_per_hectare'] * answers['farm_size']
+                print(f"- Use {pesticide['name']} at {pesticide['dosage_per_hectare']} liters per hectare.")
+                print(f"  For your farm size, apply a total of {total_amount:.2f} liters.")
+                print(f"  {pesticide['dilution']}")
+            print(f"Application: {pest['application']}")
+            print(f"Frequency: {pest['frequency']}")
+            print(f"Effect: {pest['effect']}")
+        print("\nNote: Always follow the product label instructions and local regulations to avoid overuse and harm.\nDo not mix pesticides as it can reduce effectiveness and may cause harmful reactions.")
+    else:
+        print("No specific pest control advice based on your region and crops.")
+
+if __name__ == "__main__":
+    main()
